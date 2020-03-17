@@ -1,13 +1,7 @@
 <template>
     <div class="container">
-        <van-nav-bar :title="$route.query.name" left-arrow @click-left="onClickLeft"></van-nav-bar>
-        <van-cell-group class="cellGroup">
-            <van-cell title="货机名" is-link :value="info.name" />
-            <van-cell title="管理员" is-link :value="info.manager" />
-            <van-cell title="机身条码" :value="info.surface_no" />
-            <van-cell title="货机型号" :value="info.model" />
-        </van-cell-group>
-        <div class="product" v-if="info.list!=[]">
+        <van-nav-bar title="一键补货" left-arrow @click-left="onClickLeft"></van-nav-bar>
+        <div class="product" v-if="$route.query.list!=[]&&$route.query.list.length!=0">
             <table>
                 <thead>
                     <td>位置</td>
@@ -17,7 +11,7 @@
                     <td>操作</td>
                 </thead>
                 <tbody>
-                    <tr v-for="(item,index) in info.list" :key="index">
+                    <tr v-for="(item,index) in $route.query.list" :key="index">
                         <th>{{item.cid}}</th>
                         <th>{{item.goods_name}}</th>
                         <th>{{item.amount}}</th>
@@ -29,7 +23,7 @@
         </div>
         <van-tabbar v-model="active" @change="changeTabs">
             <van-tabbar-item name="cancel">取消</van-tabbar-item>
-            <!-- <van-tabbar-item name="done">一键补货</van-tabbar-item> -->
+            <van-tabbar-item name="done">完成</van-tabbar-item>
         </van-tabbar>
     </div>
 </template>
@@ -65,44 +59,24 @@
 </style>
 
 <script>
-import requestData  from '../../requestMethod';
 export default {
     data() {
         return {
-            info:{},
-            active:'',
+            active:''
         }
     },
-    mounted() {
-        this.getInfo();
-    },
-    methods:{
-        getInfo(){
-            requestData('/api/wechat/mmc/container/info',{
-                id:sessionStorage.getItem('id')
-            },'get').then((res)=>{
-                if(res.status==200){
-                    this.info = res.data;
-                }
-            },(err)=>{
-                alert(err)
-            })
-        },
+    methods: {
         onClickLeft(){
-            this.$router.push('/');
-        },
-        tabToSupply(cid){
-            this.$router.push({ name : 'counterSupply' , query : { id : cid } });
+            this.$router.push({ name : 'counterDetail' });
         },
         changeTabs(){
             if(this.active == 'cancel'){
                 alert('取消')
-                this.$router.push('/');
+                this.$router.push({ name : 'counterDetail' });
             }else{
-                alert('一键补货')
-                this.$router.push({ name : 'counterSupOnce' , query : { list : this.info.list }});
+                alert('完成')
             }
         },
-    }
+    },
 }
 </script>

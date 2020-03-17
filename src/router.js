@@ -1,15 +1,16 @@
 import VueRouter from 'vue-router'
 
-import CounterBind from './components/countertManage/counterBind.vue'
+
 import CounterDetail from './components/countertManage/counterDetail.vue'
 import CounterSupply from './components/countertManage/counterSupply.vue'
+import CounterSupOnce from './components/countertManage/counterSupOnce.vue'
 import Index from './index'
 
 const routes = [
     { path : '/' , component : Index , name : 'index'},
-    { path : '/counterBind' , component : CounterBind , name : 'counterBind' },
     { path : '/counterDetail' , component : CounterDetail , name : 'counterDetail' },
     { path : '/counterSupply' , component : CounterSupply , name : 'counterSupply' },
+    { path : '/counterSupOnce' , component : CounterSupOnce , name : 'counterSupOnce' },
   ]
   
 const router = new VueRouter({

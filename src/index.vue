@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <van-nav-bar :title="curTitle" :right-text="curRightTxt" left-arrow @click-left="onClickLeft" @click-right="onClickRight"></van-nav-bar>
+        <van-nav-bar :title="curTitle" left-arrow @click-left="onClickLeft"></van-nav-bar>
         <CounterManage v-if="active == 'counterManage'"/>
         <OrderManage v-if="active == 'orderManage'"/>
         <van-tabbar v-model="active" @change="changeTabs">
@@ -29,7 +29,6 @@ export default {
         return {
             active:'counterManage',
             curTitle:'货机管理',
-            curRightTxt:'绑定新货机',
         }
     },
     methods:{
@@ -37,11 +36,9 @@ export default {
             switch (this.active) {
                 case 'counterManage':
                     this.curTitle = '货机管理';
-                    this.curRightTxt = '绑定新货机';
                     break;
                 case 'orderManage':
                     this.curTitle = '订单管理';
-                    this.curRightTxt = '';
                     break;
                 default:
                     break;
@@ -50,9 +47,6 @@ export default {
         onClickLeft(){
             
         },
-        onClickRight(){
-            this.$router.push({ name : 'counterBind' })
-        }
     }
 }
 </script>
