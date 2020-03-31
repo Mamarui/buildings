@@ -2,20 +2,20 @@
     <div class="container">
         <p class="title">当前货机数：{{count}}</p>
         <div class="productBox">
-            <div v-for="(item,index) in product" :key="index" class="product" @click="goInfo(index)">
+            <div v-for="(item,index) in product" :key="index" class="product" @click="goInfo(item.id,item.model)">
                 <van-icon name="arrow" class="arrow"/>
-                <van-tag mark type="success" v-if="item.state=='正常'" class="tag_normal">正常</van-tag>
-                <van-card :tag="item.state=='缺货'?'缺货':''" :title="item.type" thumb="https://img.yzcdn.cn/vant/t-thirt.jpg">
+                <van-tag mark :type="item.dto_status=='正常'?'success':(item.dto_status=='缺货'?'danger':(item.dto_status=='连接断开'?'warning':''))" class="tag_normal">{{item.dto_status}}</van-tag>
+                <van-card :tag="item.volume==0?'缺货':''" :title="item.model" :thumb="item.icon==''?'https://img.yzcdn.cn/vant/t-thirt.jpg':item.icon">
                     <div slot="desc">
-                        <div class="van-ellipsis">货机编码 ： {{item.code}}</div>
+                        <div class="van-ellipsis">货机编码 ： {{item.surface_no}}</div>
                         <div class="van-ellipsis">管理员 ： {{item.manager}}</div>
                     </div>
                     <div slot="tags" style="margin-top:0.5rem;">
-                        <p><b style="margin-right:0.5rem;"><i style="font-size:1rem;color:red;margin-right:0.5rem;">{{item.onsale}}</i>/</b>{{item.total}}</p>
+                        <p><b style="margin-right:0.5rem;"><i style="font-size:1rem;color:red;margin-right:0.5rem;">{{item.amount}}</i>/</b>{{item.volume}}</p>
                         <p>在售/容量</p>
                     </div>
                     <div slot="footer">
-                        <p class="footer">{{item.station}}</p>
+                        <p class="footer">{{item.name}}</p>
                     </div>
                 </van-card>
             </div>
@@ -55,7 +55,7 @@
     }
     .container .productBox .product .tag_normal{
         position: absolute;
-        left: 1.15rem;
+        left: 0.5rem;
         top: 0.7rem;
         z-index: 999;
     }
@@ -69,107 +69,37 @@
 </style>
 
 <script>
+import requestData  from '../../requestMethod';
 export default {
     data() {
         return {
             count:0,
-            product:[
-                {
-                    state:'正常',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'正常',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'正常',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'正常',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-                {
-                    state:'缺货',
-                    type:'货机型号',
-                    code:'货机编码',
-                    manager:'张三李四',
-                    onsale:3,
-                    total:10,
-                    station:'23楼102'
-                },
-            ]
+            product:[],
+            searchForm:{
+                merchant:sessionStorage.getItem('merchant'),
+                manager:12
+            }
         }
     },
+    mounted() {
+        this.getList();
+    },
     methods:{
-        goInfo(index){
-            this.$router.push({ name : 'counterDetail' ,query : { index : index }});
+        getList(){
+            requestData('/api/wechat/mmc/container/list',{
+                ...this.searchForm
+            },'get').then((res)=>{
+                if(res.status==200){
+                    this.count = res.count;
+                    this.product = res.data;
+                }
+            },(err)=>{
+                alert(err)
+            })
+        },
+        goInfo(id,model){
+            sessionStorage.setItem('id',id);
+            this.$router.push({ name : 'counterDetail' ,query : { id : id , name : model}});
         },
     }
 }

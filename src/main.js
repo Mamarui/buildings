@@ -15,9 +15,16 @@ import {
     Cell, CellGroup,
     Icon,
     Tab, Tabs,
-    SwipeCell
+    SwipeCell,
+    Dialog ,
+    Toast ,
+    Loading ,
+    Picker ,
+    Popup ,
+    Field ,
 
 } from 'vant';
+
 
 
 Vue.use(Button);
@@ -29,12 +36,20 @@ Vue.use(Cell).use(CellGroup);
 Vue.use(Icon);
 Vue.use(Tab).use(Tabs);
 Vue.use(SwipeCell);
+Vue.use(Dialog);
+Vue.use(Toast);
+Vue.use(Loading);
+Vue.use(Picker);
+Vue.use(Popup);
+Vue.use(Field);
 
 Vue.config.productionTip = false
 
 
-new Vue({
-    render: h => h(App),
-    router
-
-}).$mount('#app')
+var Vues = new Vue({
+    el: '#app',
+    router,
+    render: h => h(App)
+  })
+  
+  export default Vues
